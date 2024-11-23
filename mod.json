@@ -1,0 +1,18 @@
+{
+	"geode": "4.0.1",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "covernts.custom_wraith_codes",
+	"name": "Custom Wraith Codes",
+	"version": "v1.0.0",
+	"developer": "covernts",
+	"description": "Add custom codes to The Wraith.",
+	"links": {
+		"source": "https://github.com/covernts/CustomWraithCodes"
+	},
+	"tags": ["offline", "joke"]
+}
