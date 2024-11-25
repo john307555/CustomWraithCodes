@@ -2,7 +2,7 @@
 My first Geode mod!
 
 ## How to use
-Open the Wraith and "kale". The reward and code are customisable through the `saved.json`
+Open the Wraith and input "kale". The reward and code are customisable through the `saved.json`
 
 ## Build instructions
 1. You must have the following: `CMake`, `MSVC / Clang`, `Git`, `Geode CLI`, `Geode SDK`
