@@ -1,28 +1,22 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/SecretLayer5.hpp>
-#include <regex>
 
 using namespace cocos2d;
 
-GJRewardObject* parse(const std::string& reward) {
-	std::regex rewardRegex(R"((\d+)(orb|key|diamond))");
-	std::smatch match;
+GJRewardObject* parse() {
+	auto type = geode::Mod::get()->getSettingValue<std::string>("reward-type");
+	auto amount = geode::Mod::get()->getSettingValue<int64_t>("reward-amount");
 
-	if (std::regex_match(reward, match, rewardRegex)) {
-		int amount = std::stoi(match[1].str());
-		std::string type = match[2].str();
-
-		if (type == "orb") {
-			return GJRewardObject::create(SpecialRewardItem::Orbs, amount, 1);
-		} else if (type == "key") {
-			return GJRewardObject::create(SpecialRewardItem::BonusKey, amount, 1);
-		} else if (type == "diamond") {
-			return GJRewardObject::create(SpecialRewardItem::Diamonds, amount, 1);
-		}
+	if (type == "Orbs") {
+		return GJRewardObject::create(SpecialRewardItem::Orbs, amount, 1);
+	} else if (type == "Keys") {
+		return GJRewardObject::create(SpecialRewardItem::BonusKey, amount, 1);
+	} else if (type == "Diamonds") {
+		return GJRewardObject::create(SpecialRewardItem::Diamonds, amount, 1);
 	}
-
+	
 	return nullptr;
-}
+};
 
 class $modify(CustomWraithCodes, SecretLayer5) {
 	struct Fields {
@@ -49,11 +43,11 @@ class $modify(CustomWraithCodes, SecretLayer5) {
 	}
 
 	void showRewardWrapper() {
-		auto rewardObj = parse(geode::Mod::get()->getSavedValue<std::string>("reward", "1orb"));
+		auto rewardObj = parse();
 		
 		if (rewardObj) {
-			auto item = GJRewardItem::createWithObject(GJRewardType::Key100Treasure, rewardObj);
-			auto layer = RewardUnlockLayer::create(2, nullptr);
+			auto item = GJRewardItem::createWithObject(GJRewardType::Unknown, rewardObj);
+			auto layer = RewardUnlockLayer::create(1, nullptr);
 
 			auto scene = CCDirector::sharedDirector()->getRunningScene();
 			scene->addChild(layer);
@@ -62,12 +56,12 @@ class $modify(CustomWraithCodes, SecretLayer5) {
 			auto call = CCCallFunc::create(this, nullptr);
 			scene->runAction(CCSequence::create(CCDelayTime::create(2), call, nullptr));
 		} else {
-			FLAlertLayer::create("Invalid Reward", "The reward string provided is invalid. See the mod page for help.", "OK")->show();
+			FLAlertLayer::create("Error", "There was an error processing your reward.", "OK")->show();
 		}
 	}
 
 	void onlineRewardStatusFailed() {
-		auto code = geode::Mod::get()->getSavedValue<std::string>("code", "kale");
+		auto code = geode::Mod::get()->getSettingValue<std::string>("code");
 		std::transform(
 			code.begin(),
 			code.end(),

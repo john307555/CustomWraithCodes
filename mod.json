@@ -14,5 +14,24 @@
 	"links": {
 		"source": "https://github.com/covernts/CustomWraithCodes"
 	},
+	"settings": {
+		"reward-type": {
+			"type": "string",
+			"name": "Reward Type",
+			"default": "Orbs",
+			"one-of": ["Orbs", "Keys", "Diamonds"]
+		},
+		"reward-amount": {
+			"type": "int",
+			"name": "Amount",
+			"default": 1
+		},
+		"code": {
+			"type": "string",
+			"name": "Code",
+			"default": "kale",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		}
+	},
 	"tags": ["offline", "joke"]
 }
