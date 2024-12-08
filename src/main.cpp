@@ -1,18 +1,26 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/SecretLayer5.hpp>
+#include <Geode/modify/GameStatsManager.hpp>
 
 using namespace cocos2d;
 
 GJRewardObject* parse() {
 	auto type = geode::Mod::get()->getSettingValue<std::string>("reward-type");
 	auto amount = geode::Mod::get()->getSettingValue<int64_t>("reward-amount");
+	auto gsm = GameStatsManager::sharedState();
 
 	if (type == "Orbs") {
+		gsm->incrementStat("14", amount);
 		return GJRewardObject::create(SpecialRewardItem::Orbs, amount, 1);
 	} else if (type == "Keys") {
+		gsm->incrementStat("21", amount);
 		return GJRewardObject::create(SpecialRewardItem::BonusKey, amount, 1);
 	} else if (type == "Diamonds") {
+		gsm->incrementStat("13", amount);
 		return GJRewardObject::create(SpecialRewardItem::Diamonds, amount, 1);
+	} else if (type == "Gold Keys") {
+		gsm->incrementStat("43", amount);
+		return GJRewardObject::create(SpecialRewardItem::GoldKey, amount, 1);
 	}
 	
 	return nullptr;

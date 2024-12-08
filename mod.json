@@ -19,7 +19,7 @@
 			"type": "string",
 			"name": "Reward Type",
 			"default": "Orbs",
-			"one-of": ["Orbs", "Keys", "Diamonds"]
+			"one-of": ["Orbs", "Keys", "Diamonds", "Gold Keys"]
 		},
 		"reward-amount": {
 			"type": "int",
