@@ -1,25 +1,27 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/SecretLayer5.hpp>
 #include <Geode/modify/GameStatsManager.hpp>
+#include <Geode/utils/string.hpp>
 
 using namespace cocos2d;
 
 GJRewardObject* parse() {
 	auto type = geode::Mod::get()->getSettingValue<std::string>("reward-type");
 	auto amount = geode::Mod::get()->getSettingValue<int64_t>("reward-amount");
+	auto safe = geode::Mod::get()->getSettingValue<bool>("safe-mode");
 	auto gsm = GameStatsManager::sharedState();
 
 	if (type == "Orbs") {
-		gsm->incrementStat("14", amount);
+		if (!safe) gsm->incrementStat("14", amount);
 		return GJRewardObject::create(SpecialRewardItem::Orbs, amount, 1);
 	} else if (type == "Keys") {
-		gsm->incrementStat("21", amount);
+		if (!safe) gsm->incrementStat("21", amount);
 		return GJRewardObject::create(SpecialRewardItem::BonusKey, amount, 1);
 	} else if (type == "Diamonds") {
-		gsm->incrementStat("13", amount);
+		if (!safe) gsm->incrementStat("13", amount);
 		return GJRewardObject::create(SpecialRewardItem::Diamonds, amount, 1);
 	} else if (type == "Gold Keys") {
-		gsm->incrementStat("43", amount);
+		if (!safe) gsm->incrementStat("43", amount);
 		return GJRewardObject::create(SpecialRewardItem::GoldKey, amount, 1);
 	}
 	
@@ -31,14 +33,21 @@ class $modify(CustomWraithCodes, SecretLayer5) {
 		std::string text = "";
 	};
 
+	bool init() {
+		if (!SecretLayer5::init()) return false;
+
+		if (!geode::Mod::get()->getSavedValue("disclaimer", false)) {
+			auto popup = FLAlertLayer::create("Custom Wraith Codes", "This mod uses an <cy>anticheat bypass</c> which can get you leaderboard <cr>BANNED</c>. Safe mode is on by default. Safe mode can be disabled in the mod settings. Proceed with caution.", "OK");
+			popup->m_scene = this;
+			popup->show();
+			geode::Mod::get()->setSavedValue("disclaimer", true);
+		}
+
+		return true;
+	}
+
 	void onSubmit(CCObject* sender) {
-		m_fields->text = this->m_textInput->getString();
-		std::transform(
-			m_fields->text.begin(),
-			m_fields->text.end(),
-			m_fields->text.begin(),
-			[](unsigned char c) { return std::tolower(c); }
-		);
+		m_fields->text = geode::utils::string::toLower(this->m_textInput->getString());
 		SecretLayer5::onSubmit(sender);
 	}
 
@@ -69,13 +78,7 @@ class $modify(CustomWraithCodes, SecretLayer5) {
 	}
 
 	void onlineRewardStatusFailed() {
-		auto code = geode::Mod::get()->getSettingValue<std::string>("code");
-		std::transform(
-			code.begin(),
-			code.end(),
-			code.begin(),
-			[](unsigned char c) { return std::tolower(c); }
-		);
+		auto code = geode::utils::string::toLower(geode::Mod::get()->getSettingValue<std::string>("code"));
 		
 		if (m_fields->text == code) {
 			auto sequence = CCSequence::create(

@@ -1,5 +1,5 @@
 {
-	"geode": "4.0.1",
+	"geode": "4.1.0",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -8,7 +8,7 @@
 	},
 	"id": "covernts.custom_wraith_codes",
 	"name": "Custom Wraith Codes",
-	"version": "v1.1.0",
+	"version": "v1.1.1",
 	"developer": "covernts",
 	"description": "Add custom codes to The Wraith.",
 	"links": {
@@ -19,19 +19,28 @@
 			"type": "string",
 			"name": "Reward Type",
 			"default": "Orbs",
-			"one-of": ["Orbs", "Keys", "Diamonds", "Gold Keys"]
+			"one-of": ["Orbs", "Keys", "Diamonds", "Gold Keys"],
+			"description": "The type of reward given."
 		},
 		"reward-amount": {
 			"type": "int",
 			"name": "Amount",
-			"default": 1
+			"default": 1,
+			"description": "The amount of the specified reward type."
 		},
 		"code": {
 			"type": "string",
 			"name": "Code",
 			"default": "kale",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ",
+			"description": "The code to enter in the vault."
+		},
+		"safe-mode": {
+			"type": "bool",
+			"name": "Safe Mode",
+			"default": true,
+			"description": "Disables the anticheat bypass."
 		}
 	},
-	"tags": ["offline", "joke"]
+	"tags": ["offline", "joke", "cheats"]
 }
