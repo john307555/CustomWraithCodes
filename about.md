@@ -1,14 +1,24 @@
 # Custom Wraith Codes
-Adds custom codes to the Wraith Vault.
 
-Default code and reward: kale, 1 orb
+Enough with RobTop's stupid codes! **Custom Wraith Codes** allows you to add your own codes with their own rewards!
 
-## FAQ
-Q: How do I change the code and the reward?
-A: Open the mod settings and all the customisable options will be there.
+---
 
-Q: Can I make more than 1 code?
-A: There is no current support for that. This will be added in the future.
+## 🔧 Features
+- Add custom codes to the Wraith Vault.
+- Default code: **kale**
+- Default reward: **1 orb**
+- Customize both the code and reward through the mod settings.
 
-Q: How can I reward an icon?
-A: At the moment, only gold keys, demon keys, diamonds and orbs can be rewarded. This will be added in the future.
+---
+
+## ❓ FAQ
+
+**Q: How do I change the code and reward?**  
+A: Open the mod settings. All customization options are available there.  
+
+**Q: Can I create more than one code?**  
+A: Not yet! Support for multiple codes will be added in a future update.  
+
+**Q: Can I reward an icon?**  
+A: At the moment, you can only reward **gold keys**, **demon keys**, **diamonds**, and **orbs**. Icon rewards are planned for a future update.  

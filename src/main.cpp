@@ -3,29 +3,42 @@
 #include <Geode/modify/GameStatsManager.hpp>
 #include <Geode/utils/string.hpp>
 
+using namespace geode::prelude;
 using namespace cocos2d;
 
-GJRewardObject* parse() {
-	auto type = geode::Mod::get()->getSettingValue<std::string>("reward-type");
-	auto amount = geode::Mod::get()->getSettingValue<int64_t>("reward-amount");
-	auto safe = geode::Mod::get()->getSettingValue<bool>("safe-mode");
+const char* getStatId(SpecialRewardItem type) {
+	switch (type) {
+		case SpecialRewardItem::Orbs: return "14";
+		case SpecialRewardItem::BonusKey: return "21";
+		case SpecialRewardItem::Diamonds: return "13";
+		case SpecialRewardItem::GoldKey: return "43";
+		default: return "0";
+	}
+};
+
+GJRewardObject* create_reward(std::string type, int64_t amount) {
 	auto gsm = GameStatsManager::sharedState();
+	auto obj = GJRewardObject::create();
 
 	if (type == "Orbs") {
-		if (!safe) gsm->incrementStat("14", amount);
-		return GJRewardObject::create(SpecialRewardItem::Orbs, amount, 1);
+		gsm->incrementStat(getStatId(SpecialRewardItem::Orbs), amount);
+		obj->m_specialRewardItem = SpecialRewardItem::Orbs;
+		obj->m_total = amount;
 	} else if (type == "Keys") {
-		if (!safe) gsm->incrementStat("21", amount);
-		return GJRewardObject::create(SpecialRewardItem::BonusKey, amount, 1);
+		gsm->incrementStat(getStatId(SpecialRewardItem::BonusKey), amount);
+		obj->m_specialRewardItem = SpecialRewardItem::BonusKey;
+		obj->m_total = amount;
 	} else if (type == "Diamonds") {
-		if (!safe) gsm->incrementStat("13", amount);
-		return GJRewardObject::create(SpecialRewardItem::Diamonds, amount, 1);
+		gsm->incrementStat(getStatId(SpecialRewardItem::Diamonds), amount);
+		obj->m_specialRewardItem = SpecialRewardItem::Diamonds;
+		obj->m_total = amount;
 	} else if (type == "Gold Keys") {
-		if (!safe) gsm->incrementStat("43", amount);
-		return GJRewardObject::create(SpecialRewardItem::GoldKey, amount, 1);
+		gsm->incrementStat(getStatId(SpecialRewardItem::GoldKey), amount);
+		obj->m_specialRewardItem = SpecialRewardItem::GoldKey;
+		obj->m_total = amount;
 	}
 	
-	return nullptr;
+	return obj;
 };
 
 class $modify(CustomWraithCodes, SecretLayer5) {
@@ -36,31 +49,37 @@ class $modify(CustomWraithCodes, SecretLayer5) {
 	bool init() {
 		if (!SecretLayer5::init()) return false;
 
-		if (!geode::Mod::get()->getSavedValue("disclaimer", false)) {
+		if (!Mod::get()->getSavedValue("disclaimer", false)) {
 			auto popup = FLAlertLayer::create("Custom Wraith Codes", "This mod uses an <cy>anticheat bypass</c> which can get you leaderboard <cr>BANNED</c>. Safe mode is on by default. Safe mode can be disabled in the mod settings. Proceed with caution.", "OK");
 			popup->m_scene = this;
 			popup->show();
-			geode::Mod::get()->setSavedValue("disclaimer", true);
+			Mod::get()->setSavedValue("disclaimer", true);
 		}
 
 		return true;
 	}
 
 	void onSubmit(CCObject* sender) {
-		m_fields->text = geode::utils::string::toLower(this->m_textInput->getString());
+		m_fields->text = utils::string::toLower(this->m_textInput->getString());
 		SecretLayer5::onSubmit(sender);
 	}
 
-	void showSuccessWrapper() {
+	void show_success() {
 		this->showSuccessAnimation();
 	}
 
-	void fadeInLoadingWrapper() {
+	void fade_loading() {
 		this->m_circleSprite->fadeInCircle(false, 0.5f, 0.f);
 	}
 
-	void showRewardWrapper() {
-		auto rewardObj = parse();
+	void show_reward() {
+		auto gsm = GameStatsManager::sharedState();
+		
+		auto type = Mod::get()->getSettingValue<std::string>("reward-type");
+		auto amount = Mod::get()->getSettingValue<int64_t>("reward-amount");
+		auto safe = Mod::get()->getSettingValue<bool>("safe-mode");
+
+		auto rewardObj = create_reward(type, amount);
 		
 		if (rewardObj) {
 			auto item = GJRewardItem::createWithObject(GJRewardType::Unknown, rewardObj);
@@ -72,6 +91,9 @@ class $modify(CustomWraithCodes, SecretLayer5) {
 
 			auto call = CCCallFunc::create(this, nullptr);
 			scene->runAction(CCSequence::create(CCDelayTime::create(2), call, nullptr));
+
+			if (safe && rewardObj->m_specialRewardItem != SpecialRewardItem::CustomItem) 
+				gsm->incrementStat(getStatId(rewardObj->m_specialRewardItem), -amount);
 		} else {
 			FLAlertLayer::create("Error", "There was an error processing your reward.", "OK")->show();
 		}
@@ -83,10 +105,10 @@ class $modify(CustomWraithCodes, SecretLayer5) {
 		if (m_fields->text == code) {
 			auto sequence = CCSequence::create(
 				CCDelayTime::create(4),
-				CCCallFunc::create(this, callfunc_selector(CustomWraithCodes::showSuccessWrapper)),
+				CCCallFunc::create(this, callfunc_selector(CustomWraithCodes::show_success)),
 				CCDelayTime::create(1),
-				CCCallFunc::create(this, callfunc_selector(CustomWraithCodes::fadeInLoadingWrapper)),
-				CCCallFunc::create(this, callfunc_selector(CustomWraithCodes::showRewardWrapper)),
+				CCCallFunc::create(this, callfunc_selector(CustomWraithCodes::fade_loading)),
+				CCCallFunc::create(this, callfunc_selector(CustomWraithCodes::show_reward)),
 				nullptr
 			);
 

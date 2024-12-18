@@ -1,3 +1,10 @@
+# 1.2.0
+- Multi-code support
+- Fix safe mode (previous one was buggy)
+- Fix anticheat bypass
+- Rewrite readme & about
+- Refactor
+
 # 1.1.1
 - Add safe mode (prevents cheating)
 - Start using geode's string lowering function
