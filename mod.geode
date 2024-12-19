@@ -18,14 +18,14 @@
 		"reward-type": {
 			"type": "string",
 			"name": "Reward Type",
-			"default": "Orbs",
+			"default": "Diamonds",
 			"one-of": ["Orbs", "Keys", "Diamonds", "Gold Keys"],
 			"description": "The type of reward given."
 		},
 		"reward-amount": {
 			"type": "int",
 			"name": "Amount",
-			"default": 1,
+			"default": 892555,
 			"description": "The amount of the specified reward type."
 		},
 		"code": {
